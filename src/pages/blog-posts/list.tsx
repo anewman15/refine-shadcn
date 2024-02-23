@@ -84,7 +84,7 @@ export const BlogPostList: React.FC<IResourceComponentsProps> = () => {
                     variant="ghost"
                     size="icon"
                     onClick={() => {
-                        show("posts", getValue() as string);
+                        show("blog_posts", getValue() as string);
                     }}
                 >
                     <LucideEye
@@ -95,7 +95,7 @@ export const BlogPostList: React.FC<IResourceComponentsProps> = () => {
                     variant="ghost"
                     size="icon"
                     onClick={() => {
-                        edit("posts", getValue() as string);
+                        edit("blog_posts", getValue() as string);
                     }}
                 >
                     <LucideEdit
@@ -134,7 +134,7 @@ export const BlogPostList: React.FC<IResourceComponentsProps> = () => {
                   Posts
               </h1>
               <div className="p-2">
-                  <Button onClick={() => create("posts")}>Create</Button>
+                  <Button onClick={() => create("blog_posts")}>Create</Button>
               </div>
           </div>
           <DataTable {...tableProps} />
