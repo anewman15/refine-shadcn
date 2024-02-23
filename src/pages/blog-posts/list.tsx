@@ -1,12 +1,51 @@
+import React from "react";
+
 import {
   GetManyResponse,
   IResourceComponentsProps,
   useMany,
   useNavigation,
 } from "@refinedev/core";
+
 import { useTable } from "@refinedev/react-table";
 import { ColumnDef, flexRender } from "@tanstack/react-table";
-import React from "react";
+
+import { 
+  ArrowLeftToLine,
+  ArrowRightToLine,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  LucideEdit,
+  LucideEye
+} from "lucide-react";
+
+import { 
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from "@/components/ui/pagination";
+
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
+
+import { 
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table";
+
+import { Button } from "@/components/ui/button";
 
 export const BlogPostList: React.FC<IResourceComponentsProps> = () => {
   const columns = React.useMemo<ColumnDef<any>[]>(
@@ -68,27 +107,35 @@ export const BlogPostList: React.FC<IResourceComponentsProps> = () => {
         cell: function render({ getValue }) {
           return (
             <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                flexWrap: "wrap",
-                gap: "4px",
-              }}
+                style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    flexWrap: "nowrap",
+                    gap: "1px",
+                }}
             >
-              <button
-                onClick={() => {
-                  show("blog_posts", getValue() as string);
-                }}
-              >
-                Show
-              </button>
-              <button
-                onClick={() => {
-                  edit("blog_posts", getValue() as string);
-                }}
-              >
-                Edit
-              </button>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                        show("posts", getValue() as string);
+                    }}
+                >
+                    <LucideEye
+                        size={16}
+                    />
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                        edit("posts", getValue() as string);
+                    }}
+                >
+                    <LucideEdit
+                        size={16}
+                    />
+                </Button>
             </div>
           );
         },
@@ -137,95 +184,113 @@ export const BlogPostList: React.FC<IResourceComponentsProps> = () => {
 
   return (
     <div style={{ padding: "16px" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <h1>{"List"}</h1>
-        <button onClick={() => create("blog_posts")}>{"Create"}</button>
-      </div>
-      <div style={{ maxWidth: "100%", overflowY: "scroll" }}>
-        <table>
-          <thead>
-            {getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id}>
-                    {!header.isPlaceholder &&
-                      flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {getRowModel().rows.map((row) => (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div style={{ marginTop: "12px" }}>
-        <button
-          onClick={() => setPageIndex(0)}
-          disabled={!getCanPreviousPage()}
-        >
-          {"<<"}
-        </button>
-        <button onClick={() => previousPage()} disabled={!getCanPreviousPage()}>
-          {"<"}
-        </button>
-        <button onClick={() => nextPage()} disabled={!getCanNextPage()}>
-          {">"}
-        </button>
-        <button
-          onClick={() => setPageIndex(getPageCount() - 1)}
-          disabled={!getCanNextPage()}
-        >
-          {">>"}
-        </button>
-        <span>
-          <strong>
-            {" "}
-            {getState().pagination.pageIndex + 1} / {getPageCount()}{" "}
-          </strong>
-        </span>
-        <span>
-          | {"Go"}:{" "}
-          <input
-            type="number"
-            defaultValue={getState().pagination.pageIndex + 1}
-            onChange={(e) => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0;
-              setPageIndex(page);
-            }}
-          />
-        </span>{" "}
-        <select
-          value={getState().pagination.pageSize}
-          onChange={(e) => {
-            setPageSize(Number(e.target.value));
-          }}
-        >
-          {[10, 20, 30, 40, 50].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              {"Show"} {pageSize}
-            </option>
-          ))}
-        </select>
-      </div>
-    </div>
+            <div
+                className="flex justify-between items-center my-8 mx-2"
+            >
+                <h1
+                    className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl"
+                >
+                    Posts
+                </h1>
+                <div className="p-2">
+                    <Button onClick={() => create("posts")}>Create</Button>
+                </div>
+            </div>
+            <div style={{ maxWidth: "100%", overflowY: "scroll" }}>
+                <Table>
+                    <TableHeader>
+                        {getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => (
+                                    <TableHead key={header.id}>
+                                        {!header.isPlaceholder &&
+                                            flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext(),
+                                            )}
+                                    </TableHead>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {getRowModel().rows.map((row) => (
+                            <TableRow key={row.id}>
+                                {row.getVisibleCells().map((cell) => (
+                                    <TableCell key={cell.id}>
+                                        {flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext(),
+                                        )}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+            <Pagination>
+                <PaginationContent>
+                    <PaginationItem
+                    >
+                        <PaginationLink
+                            onClick={() => setPageIndex(0)}
+                        >   
+                            <ArrowLeftToLine className="h-4 w-4" />
+                        </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationPrevious
+                            onClick={() => previousPage()}
+                        >
+                            <ChevronLeftIcon className="h-4 w-4" />
+                        </PaginationPrevious>
+
+                    </PaginationItem>
+                    <PaginationItem
+                    
+                    >
+                        <PaginationNext
+                            onClick={() => nextPage()}
+                        >
+                            <ChevronRightIcon className="h-4 w-4" />
+                        </PaginationNext>
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationLink
+                            onClick={() => setPageIndex(getPageCount() - 1)}
+                        >
+                            <ArrowRightToLine className="h-4 w-4" />
+                        </PaginationLink>
+                    </PaginationItem>
+                    <div className="flex items-center space-x-6 lg:space-x-8">
+                        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+                            Page {getState().pagination.pageIndex + 1} of{" "}
+                            {getPageCount()}
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <p className="text-sm font-medium">Rows per page</p>
+                            <Select
+                                value={`${getState().pagination.pageSize}`}
+                                onValueChange={(value: any) => {
+                                setPageSize(Number(value))
+                                }}
+                            >
+                                <SelectTrigger className="h-8 w-[70px]">
+                                <SelectValue placeholder={getState().pagination.pageSize} />
+                                </SelectTrigger>
+                                <SelectContent side="top">
+                                {[5, 10, 20, 30, 40, 50].map((pageSize) => (
+                                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                                    {pageSize}
+                                    </SelectItem>
+                                ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                </PaginationContent>
+            </Pagination>
+        </div>
   );
 };
