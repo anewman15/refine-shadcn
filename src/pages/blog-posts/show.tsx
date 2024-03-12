@@ -1,3 +1,4 @@
+import React from "react";
 import {
   IResourceComponentsProps,
   useNavigation,
@@ -5,73 +6,55 @@ import {
   useResource,
   useShow,
 } from "@refinedev/core";
-import React from "react";
+
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, EditIcon, ListIcon } from "lucide-react";
 
 export const BlogPostShow: React.FC<IResourceComponentsProps> = () => {
   const { edit, list } = useNavigation();
   const { id } = useResource();
-  const { queryResult } = useShow({});
+  const { queryResult } = useShow({
+    meta: {
+      populate: ["category"],
+    },
+  });
   const { data } = queryResult;
 
   const record = data?.data;
 
-  const { data: categoryData, isLoading: categoryIsLoading } = useOne({
-    resource: "categories",
-    id: record?.category?.id || "",
-    queryOptions: {
-      enabled: !!record,
-    },
-  });
-
   return (
     <div style={{ padding: "16px" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <h1>{"Show"}</h1>
-        <div style={{ display: "flex", gap: "8px" }}>
-          <button onClick={() => list("blog_posts")}>{"List"}</button>
-          <button onClick={() => edit("blog_posts", id ?? "")}>{"Edit"}</button>
+      <div className="flex justify-between items-center">
+        <div className="flex justify-start items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => list("blog_posts")}
+          >
+            <ChevronLeft />
+          </Button>
+          <h1 className="text-2xl font-bold">{record?.title}</h1>
+        </div>
+        <div className="flex gap-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => list("blog_posts")}
+          >
+            <ListIcon />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => edit("blog_posts", id ?? "")}
+          >
+            <EditIcon />
+          </Button>
         </div>
       </div>
-      <div>
-        <div style={{ marginTop: "6px" }}>
-          <h5>{"ID"}</h5>
-          <div>{record?.id ?? ""}</div>
-        </div>
-        <div style={{ marginTop: "6px" }}>
-          <h5>{"Title"}</h5>
-          <div>{record?.title}</div>
-        </div>
-        <div style={{ marginTop: "6px" }}>
-          <h5>{"Content"}</h5>
+      <div className="mt-8">
+        <div className="p-4">
           <p>{record?.content}</p>
-        </div>
-        <div style={{ marginTop: "6px" }}>
-          <h5>{"Category"}</h5>
-          <div>
-            {categoryIsLoading ? (
-              <>Loading...</>
-            ) : (
-              <>{categoryData?.data?.title}</>
-            )}
-          </div>
-        </div>
-        <div style={{ marginTop: "6px" }}>
-          <h5>{"Status"}</h5>
-          <div>{record?.status}</div>
-        </div>
-        <div style={{ marginTop: "6px" }}>
-          <h5>{"Created at"}</h5>
-          <div>
-            {new Date(record?.createdAt).toLocaleString(undefined, {
-              timeZone: "UTC",
-            })}
-          </div>
         </div>
       </div>
     </div>
