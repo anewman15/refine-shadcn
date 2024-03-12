@@ -1,9 +1,11 @@
+import { Button } from "@/components/ui/button";
 import {
   IResourceComponentsProps,
   useNavigation,
   useResource,
   useShow,
 } from "@refinedev/core";
+import { ChevronLeft, EditIcon, ListIcon } from "lucide-react";
 import React from "react";
 
 export const CategoryShow: React.FC<IResourceComponentsProps> = () => {
@@ -15,29 +17,38 @@ export const CategoryShow: React.FC<IResourceComponentsProps> = () => {
   const record = data?.data;
 
   return (
-    <div style={{ padding: "16px" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <h1>Show</h1>
-        <div style={{ display: "flex", gap: "8px" }}>
-          <button onClick={() => list("categories")}>List</button>
-          <button onClick={() => edit("categories", id ?? "")}>Edit</button>
+    <div className="p-2">
+      <div className="flex justify-between items-center">
+        <div className="flex justify-items-start items-center gap-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => list("categories")}  
+        >
+          <ChevronLeft />
+        </Button>
+        <h1 className="4xl font-bold">Category Details</h1>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => list("categories")}
+          >
+            <ListIcon />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => edit("categories", id ?? "")}
+          >
+            <EditIcon />  
+          </Button>
         </div>
       </div>
-      <div>
-        <div style={{ marginTop: "6px" }}>
-          <h5>ID</h5>
-          <div>{record?.id ?? ""}</div>
-        </div>
-        <div style={{ marginTop: "6px" }}>
-          <h5>Title</h5>
-          <div>{record?.title}</div>
-        </div>
+      <div className="mt-6 p-4" >
+          <p className="font-bold">ID - {record?.id ?? ""}</p>
+          <p className="capitalize mt-3">{record?.title}</p>
       </div>
     </div>
   );
