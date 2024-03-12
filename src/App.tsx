@@ -23,6 +23,7 @@ import {
   CategoryList,
   CategoryShow,
 } from "./pages/categories";
+import { EditIcon, TagsIcon } from "lucide-react";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
                 show: "/blog-posts/show/:id",
                 meta: {
                   canDelete: true,
+                  icon: <EditIcon size={16} />
                 },
               },
               {
@@ -52,6 +54,7 @@ function App() {
                 show: "/categories/show/:id",
                 meta: {
                   canDelete: true,
+                  icon: <TagsIcon size={16}/>
                 },
               },
             ]}
