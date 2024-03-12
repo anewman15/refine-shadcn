@@ -73,12 +73,7 @@ export const BlogPostList: React.FC<IResourceComponentsProps> = () => {
         cell: function render({ getValue }) {
           return (
             <div
-                style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    flexWrap: "nowrap",
-                    gap: "1px",
-                }}
+                className="flex flex-row flex-nowrap gap-0"
             >
                 <Button
                     variant="ghost"
@@ -124,14 +119,14 @@ export const BlogPostList: React.FC<IResourceComponentsProps> = () => {
   }));
 
   return (
-      <div style={{ padding: "16px" }}>
+      <div className="p-2">
           <div
-              className="flex justify-between items-center my-8 mx-2"
+              className="flex justify-between items-center my-2 mx-2"
           >
               <h1
-                  className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl"
+                  className="scroll-m-20 text-2xl font-extrabold tracking-tight"
               >
-                  Posts
+                  Blog Posts
               </h1>
               <div className="p-2">
                   <Button onClick={() => create("blog_posts")}>Create</Button>
