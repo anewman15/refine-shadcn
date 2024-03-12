@@ -1,7 +1,11 @@
+import React from "react";
 import { IResourceComponentsProps, useNavigation } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
-import { ColumnDef, flexRender } from "@tanstack/react-table";
-import React from "react";
+import { ColumnDef } from "@tanstack/react-table";
+
+import { DataTable } from "@/components/table/data-table";
+import { Button } from "@/components/ui/button";
+import { LucideEdit, LucideEye } from "lucide-react";
 
 export const CategoryList: React.FC<IResourceComponentsProps> = () => {
   const columns = React.useMemo<ColumnDef<any>[]>(
@@ -19,31 +23,34 @@ export const CategoryList: React.FC<IResourceComponentsProps> = () => {
       {
         id: "actions",
         accessorKey: "id",
-        header: "Actions",
+        header: () => <h1 className="flex justify-end">Actions</h1>,
         cell: function render({ getValue }) {
           return (
             <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                flexWrap: "wrap",
-                gap: "4px",
-              }}
+              className="flex flex-nowrap justify-end items-center gap-0"
             >
-              <button
+              <Button
+              variant="ghost"
+              size="icon"
                 onClick={() => {
                   show("categories", getValue() as string);
                 }}
               >
-                Show
-              </button>
-              <button
+                  <LucideEye
+                      size={16}
+                  />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => {
                   edit("categories", getValue() as string);
                 }}
               >
-                Edit
-              </button>
+                  <LucideEdit
+                      size={16}
+                  />
+              </Button>
             </div>
           );
         },
@@ -54,23 +61,11 @@ export const CategoryList: React.FC<IResourceComponentsProps> = () => {
 
   const { edit, show, create } = useNavigation();
 
-  const {
-    getHeaderGroups,
-    getRowModel,
-    setOptions,
-    getState,
-    setPageIndex,
-    getCanPreviousPage,
-    getPageCount,
-    getCanNextPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-  } = useTable({
+  const tableProps = useTable({
     columns,
   });
 
-  setOptions((prev) => ({
+  tableProps?.setOptions((prev) => ({
     ...prev,
     meta: {
       ...prev.meta,
@@ -78,96 +73,20 @@ export const CategoryList: React.FC<IResourceComponentsProps> = () => {
   }));
 
   return (
-    <div style={{ padding: "16px" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <h1>List</h1>
-        <button onClick={() => create("categories")}>Create</button>
+      <div className="p-2">
+          <div
+              className="flex justify-between items-center m-2"
+          >
+              <h1
+                  className="scroll-m-20 text-2xl font-extrabold tracking-tight"
+              >
+                  Categories
+              </h1>
+              <div className="p-2">
+                  <Button onClick={() => create("categories")}>Create</Button>
+              </div>
+          </div>
+          <DataTable {...tableProps} />
       </div>
-      <div style={{ maxWidth: "100%", overflowY: "scroll" }}>
-        <table>
-          <thead>
-            {getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id}>
-                    {!header.isPlaceholder &&
-                      flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {getRowModel().rows.map((row) => (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div style={{ marginTop: "12px" }}>
-        <button
-          onClick={() => setPageIndex(0)}
-          disabled={!getCanPreviousPage()}
-        >
-          {"<<"}
-        </button>
-        <button onClick={() => previousPage()} disabled={!getCanPreviousPage()}>
-          {"<"}
-        </button>
-        <button onClick={() => nextPage()} disabled={!getCanNextPage()}>
-          {">"}
-        </button>
-        <button
-          onClick={() => setPageIndex(getPageCount() - 1)}
-          disabled={!getCanNextPage()}
-        >
-          {">>"}
-        </button>
-        <span>
-          <strong>
-            {" "}
-            {getState().pagination.pageIndex + 1} / {getPageCount()}{" "}
-          </strong>
-        </span>
-        <span>
-          | Go:{" "}
-          <input
-            type="number"
-            defaultValue={getState().pagination.pageIndex + 1}
-            onChange={(e) => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0;
-              setPageIndex(page);
-            }}
-          />
-        </span>{" "}
-        <select
-          value={getState().pagination.pageSize}
-          onChange={(e) => {
-            setPageSize(Number(e.target.value));
-          }}
-        >
-          {[10, 20, 30, 40, 50].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-      </div>
-    </div>
   );
 };
