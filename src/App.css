@@ -75,7 +75,7 @@
   }
     
   .layout {
-    @apply block md:flex gap-1;
+    @apply flex flex-col md:flex-row gap-1;
   }
 
   .layout .content {
@@ -93,7 +93,7 @@
   }
 
   .menu {
-    @apply md:max-w-60 md:min-w-60 mx-2 py-2 px-1 flex justify-between items-center md:px-0 md:flex-col md:justify-start md:items-start bg-slate-100 border-gray-400;
+    @apply md:max-w-48 md:min-w-48 md:max-h-fit md:min-h-screen mx-2 py-2 px-1 flex justify-between items-center md:px-0 md:flex-col md:justify-start md:items-start bg-slate-100 border-gray-400;
   }
 
   .menu a {

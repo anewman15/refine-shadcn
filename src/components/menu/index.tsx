@@ -8,7 +8,7 @@ export const Menu = () => {
 
   return (
     <nav className="menu">
-      <ul className="flex justify-start items-center md:items-start">
+      <ul className="md:fixed flex justify-start items-center md:items-start">
         {menuItems.map((item) => (
           <li className="text-sm" key={item.key}>
             <Button variant="ghost" className="flex gap-1">
