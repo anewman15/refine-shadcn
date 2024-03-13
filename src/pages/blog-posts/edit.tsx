@@ -2,6 +2,7 @@ import React from "react";
 import {
   IResourceComponentsProps,
   useNavigation,
+  useOne,
   useSelect,
 } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
@@ -30,14 +31,17 @@ export const BlogPostEdit: React.FC<IResourceComponentsProps> = () => {
   const { control, formState: { errors }, handleSubmit, register, setValue } = form;
   const blogPostsData = queryResult?.data?.data;
 
+  const blogPostCategoryData = useOne({ resource: "categories", id: blogPostsData?.category });
+  const blogPostCategory = blogPostCategoryData?.data?.data;
+
   const { options: categoryOptions } = useSelect({
     resource: "categories",
     optionLabel: "title",
-    defaultValue: blogPostsData?.category?.id,
+    defaultValue: blogPostCategory?.id,
   });
 
   React.useEffect(() => {
-    setValue("category.id", blogPostsData?.category?.id);
+    setValue("category", blogPostCategory);
   }, [categoryOptions]);
 
   return (
@@ -103,19 +107,19 @@ export const BlogPostEdit: React.FC<IResourceComponentsProps> = () => {
                 <FormItem>
                   <FormLabel className="mr-2">Category</FormLabel>
                   <Select
-                    defaultValue={field?.value}
+                    defaultValue={field?.value?.id}
                     onValueChange={field?.onChange}
                     {...register("category", {
                       required: "Category cannot be empty",
                     })}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a category" />
+                      <SelectValue placeholder={field?.value?.title ?? "Select a category"} />
                     </SelectTrigger>
                     <SelectContent>
                       {categoryOptions?.map((option) => (
-                        <SelectItem value={option.value} key={option.value}>
-                          {option.label}
+                        <SelectItem value={`${option?.value}` as string} key={option?.value}>
+                          {option?.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -133,14 +137,12 @@ export const BlogPostEdit: React.FC<IResourceComponentsProps> = () => {
                 <FormItem>
                   <FormLabel className="mr-2">Status</FormLabel>
                   <Select
-                    defaultValue={field?.value}
+                    defaultValue={field?.value?.name}
                     onOpenChange={field?.onChange}
-                    {...register("status", {
-                      required: "Status cannot be empty",
-                    })}
+                    {...register("status")}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select post status" />
+                      <SelectValue placeholder={field?.value ?? "Select post status"} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="draft">draft</SelectItem>
