@@ -103,8 +103,8 @@ export const BlogPostCreate: React.FC<IResourceComponentsProps> = () => {
                     </SelectTrigger>
                     <SelectContent>
                       {categoryOptions?.map((option) => (
-                        <SelectItem value={option.value} key={option.value}>
-                          {option.label}
+                        <SelectItem value={`${option?.value}` as string} key={option?.value}>
+                          {option?.label}
                         </SelectItem>
                       ))}  
                     </SelectContent>
