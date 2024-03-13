@@ -2,6 +2,8 @@ import React from "react";
 import {
   IResourceComponentsProps,
   useNavigation,
+  useMany,
+  GetManyResponse,
 } from "@refinedev/core";
 
 import { useTable } from "@refinedev/react-table";
@@ -11,8 +13,23 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/table/data-table";
 import { LucideEdit, LucideEye } from "lucide-react";
 
+interface ICategory {
+  id: number;
+  title: string;
+}
+
+interface IBlogPost {
+  id: number;
+  title: string;
+  content: string;
+  status: "published" | "draft" | "rejected";
+  category: {
+    id: number;
+  };
+}
+
 export const BlogPostList: React.FC<IResourceComponentsProps> = () => {
-  const columns = React.useMemo<ColumnDef<any>[]>(
+  const columns = React.useMemo<ColumnDef<IBlogPost>[]>(
     () => [
       {
         id: "id",
@@ -32,7 +49,17 @@ export const BlogPostList: React.FC<IResourceComponentsProps> = () => {
       {
         id: "category",
         header: "Category",
-        accessorKey: "category.title",
+        accessorKey: "category.id",
+        cell: function render({ getValue, table }) {
+          const meta = table.options.meta as {
+            categoryData: GetManyResponse<ICategory>;
+          };
+          const category = meta.categoryData?.data?.find(
+            (item: ICategory) => item.id === getValue(),
+          );
+
+          return category?.title ?? "";
+        },
       },
       {
         id: "status",
@@ -88,6 +115,25 @@ export const BlogPostList: React.FC<IResourceComponentsProps> = () => {
         },
       },
   });
+
+  const tableData = tableProps?.refineCore?.tableQueryResult?.data;
+  const catList = tableData?.data?.map((item: IBlogPost) => item?.category?.id) ?? [];
+  
+  const { data: categoryData } = useMany({
+    resource: "categories",
+    ids: catList,
+    queryOptions: {
+      enabled: !!tableData?.data,
+    },
+  });
+
+  tableProps?.setOptions((prev) => ({
+    ...prev,
+    meta: {
+      ...prev.meta,
+      categoryData,
+    },
+  }));
 
   return (
       <div className="p-2">
