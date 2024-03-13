@@ -1,7 +1,5 @@
 import React from "react";
-
 import {
-  GetManyResponse,
   IResourceComponentsProps,
   useNavigation,
 } from "@refinedev/core";
@@ -34,37 +32,12 @@ export const BlogPostList: React.FC<IResourceComponentsProps> = () => {
       {
         id: "category",
         header: "Category",
-        accessorKey: "category",
-        cell: function render({ getValue, table }) {
-          const meta = table.options.meta as {
-            categoryData: GetManyResponse;
-          };
-
-          try {
-            const category = meta.categoryData?.data?.find(
-              (item) => item.id == getValue<any>()?.id
-            );
-
-            return category?.title ?? "Loading...";
-          } catch (error) {
-            return null;
-          }
-        },
+        accessorKey: "category.title",
       },
       {
         id: "status",
         accessorKey: "status",
         header: "Status",
-      },
-      {
-        id: "createdAt",
-        accessorKey: "createdAt",
-        header: "Created At",
-        cell: function render({ getValue }) {
-          return new Date(getValue<any>()).toLocaleString(undefined, {
-            timeZone: "UTC",
-          });
-        },
       },
       {
         id: "actions",
@@ -109,14 +82,12 @@ export const BlogPostList: React.FC<IResourceComponentsProps> = () => {
 
   const tableProps = useTable({
       columns,
-  });
-
-  tableProps?.setOptions((prev) => ({
-      ...prev,
-      meta: {
-          ...prev.meta,
+      refineCoreProps: {
+        meta: {
+          populate: ["category"],
+        },
       },
-  }));
+  });
 
   return (
       <div className="p-2">
